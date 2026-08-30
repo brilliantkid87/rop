@@ -14,3 +14,6 @@ ropctl.exe
 # OS / editor artifacts
 .DS_Store
 Thumbs.db
+
+# Internal research/agent brief - local only, not for publication
+ROP — Reversible Operations Protocol.md
