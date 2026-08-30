@@ -536,9 +536,11 @@ fabricate evidence; if something was not verified, say so.
   all 11 packages pass (2026-08-30, on the new module path). `go mod tidy` produced
   no dependency changes (same modernc.org/sqlite dependency set, go 1.25.0).
 - **Evidence:** `grep -rn "github.com/rop/rop"` over `*.go`/`*.mod` returns 0
-  matches after migration; `go.mod` declares `module github.com/brilliantkid87/rop`;
-  release commit hash and tag verification recorded in the follow-up docs commit
-  (hash unknowable inside its own commit).
+  matches after migration; `go.mod` declares `module github.com/brilliantkid87/rop`.
+  **Release commit:** `758ea05` (full hash below), tagged `v0.1.0-experimental`
+  (annotated). Post-tag verification: working tree clean; `cat VERSION` →
+  `0.1.0-experimental`; tag target == release commit; full test suite green on the
+  new module path.
 - **Blockers / open questions:** None. No push, no GitHub release, no IANA request.
 
 ## Artifacts
