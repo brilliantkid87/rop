@@ -4,10 +4,10 @@
 *.db-shm
 
 # Build artifacts
-ropd
-ropd.exe
-ropctl
-ropctl.exe
+/ropd
+/ropd.exe
+/ropctl
+/ropctl.exe
 *.test
 *.out
 
