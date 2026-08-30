@@ -537,7 +537,7 @@ fabricate evidence; if something was not verified, say so.
   no dependency changes (same modernc.org/sqlite dependency set, go 1.25.0).
 - **Evidence:** `grep -rn "github.com/rop/rop"` over `*.go`/`*.mod` returns 0
   matches after migration; `go.mod` declares `module github.com/brilliantkid87/rop`.
-  **Release commit:** `758ea05` (full hash below), tagged `v0.1.0-experimental`
+  **Release commit:** `758ea05` (full: `758ea0529967efb6894a1649a9966ab0d2939c62`), tagged `v0.1.0-experimental`
   (annotated). Post-tag verification: working tree clean; `cat VERSION` →
   `0.1.0-experimental`; tag target == release commit; full test suite green on the
   new module path.
