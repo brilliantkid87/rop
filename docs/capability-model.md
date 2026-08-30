@@ -38,7 +38,10 @@ A Core-conformant participant exposes **all** of the following:
 3. **Action Receipts**: an immutable, public, machine-readable record per successfully
    tracked Action, containing at minimum: provider identity, `actionId`,
    `operationId`, `createdAt` (RFC 3339), resource reference, reversibility class,
-   guarantee, `status`, `expiresAt` (when the class is not IRREVERSIBLE), and residue
+   guarantee, `status`, `expiresAt` (present only when an eligibility window
+   applies; a non-IRREVERSIBLE Action MAY have no window, in which case
+   `expiresAt` is absent and the Action does not expire solely due to time),
+   and residue
    metadata (possibly empty). Receipts MUST NOT contain reusable privileged reversal
    credentials or private reversal material.
 4. **Action-specific current eligibility**: a read representation of the Action's
@@ -125,7 +128,8 @@ conformance. A v0.1 Core implementation is conformant if and only if:
    `type` URIs, at minimum: `action-not-found`, `reversal-expired`,
    `irreversible-action`, `reversal-conflict`, `reversal-already-in-progress`,
    `authorization-denied`, `precondition-failed`, `verification-failed`,
-   `capability-unavailable`.
+   `capability-unavailable`, `malformed-payload` (v0.1.2: explicit — see
+   `spec/core.md` §9).
 7. **Evolution tolerance**: parsers ignore unknown optional fields; documents
    round-trip; golden fixtures for the declared version parse.
 8. **No false claims**: the implementation MUST NOT claim stronger guarantees than

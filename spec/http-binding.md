@@ -75,11 +75,28 @@ invocability):
 POST /.well-known/rop/actions/{actionId}/plan-reversal
 ```
 
-Response 200 — a read-only plan snapshot (`generatedAt`, optional
-`basisResourceVersion`, optional `validUntil`, preconditions, expected
-reversal, residue, conflicts, manual requirements). Planning MUST NOT cause
-external side effects (I-3). A plan MUST NOT be treated as authorization
-(I-19). No numeric risk scores (§39).
+Response 200 — a read-only reversal plan. Every member is specified below
+(v0.1.2 clarification; wire names are stable camelCase):
+
+| Member | Type | Optionality | Semantics / absence |
+|---|---|---|---|
+| `actionId` | string | required | The Action the plan describes. |
+| `generatedAt` | RFC 3339 UTC timestamp | required | Server time at plan generation. |
+| `currentStatus` | Action status enum | required | The Action's status at generation. |
+| `reversibility` | reversibility class enum | required | Action-time class (from the receipt). |
+| `guarantee` | guarantee enum | required | Action-time guarantee. |
+| `expiresAt` | RFC 3339 UTC timestamp | optional | Present only when the Action has an eligibility window; absent means no time-based expiry. |
+| `basisResourceVersion` | number | optional | Resource version the plan was computed against; absent when the provider has no version basis. |
+| `validUntil` | RFC 3339 UTC timestamp | optional | Provider-declared freshness deadline for the plan; absent when the provider declares none. A plan is never authorization regardless of `validUntil` (I-19). |
+| `preconditions` | array of strings | optional | Concrete provider-defined conditions; absent (or empty) when none are declared. |
+| `expectedReversal` | string | optional | Human-readable description of the expected reversal behavior; absent when the provider declares none. |
+| `residue` | array of residue objects | optional | Residue known at planning time (DECLARED); absent when none is declared. Later-discovered residue is not required to appear here. |
+| `conflicts` | array of strings | optional | Known conflicts at generation (stale basis, active dependencies, non-APPLIED status); absent when none are known. |
+| `manualRequirements` | array of strings | optional | Concrete manual steps the reversal would require; absent when none. |
+| `blockingDependencies` | array of Action-ID strings | optional | Active dependent Actions currently making reversal unsafe; absent when none. Execution re-checks them independently. |
+
+Planning MUST NOT cause external side effects (I-3). A plan MUST NOT be
+treated as authorization (I-19). No numeric risk scores (§39).
 
 If `planning` is not advertised: `501` with problem type
 `capability-unavailable` (OQ-11 tentative decision, non-retryable semantics).
@@ -105,7 +122,9 @@ POST /.well-known/rop/actions/{actionId}/reverse
 ```
 
 `outcome` is one of `REVERSED`, `PARTIALLY_REVERSED`, `REVERSE_FAILED`,
-`CONFLICT`, `OUTCOME_UNKNOWN`; `status` mirrors the resulting Action state.
+`CONFLICT`, `OUTCOME_UNKNOWN`; `status` mirrors the resulting Action state
+(`CONFLICT` is an attempt-level outcome, not an Action state — on conflict the
+Action is back in `APPLIED` with no business mutation; `spec/core.md` §4).
 A `200` with `outcome: "OUTCOME_UNKNOWN"` is a legitimate result (§34): the
 provider may or may not have executed the reversal. Clients MUST NOT retry
 blindly; a retry with the same `Idempotency-Key` replays the recorded result.
@@ -224,6 +243,11 @@ Deliberately unused in v0.1, with reasons:
 ## 9. Registration note
 
 ## 10. Well-Known URI status (experimental, unregistered)
+
+Note (v0.1.2): `malformed-payload` was added to the normative problem
+vocabulary in `spec/core.md` §9 — it was already emitted by the reference
+implementation for unparseable request bodies and bound-violating input
+(`400`).
 
 `/.well-known/rop` is an **experimental, currently unregistered** Well-Known
 URI. This specification does NOT imply that `rop` is an IANA-registered

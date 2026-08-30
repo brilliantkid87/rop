@@ -4,6 +4,66 @@ All notable changes to ROP will be documented in this file.
 
 ROP is currently experimental and non-production.
 
+## [0.1.2-experimental] - 2026-08-30
+
+### Status
+
+Clarification-only patch release. **Protocol wire version remains `0.1`.**
+Wire-compatible with `0.1.0-experimental`, `0.1.1-experimental`, the frozen
+v0.1 fixtures, and the independent Rust clean-room implementation. No
+behavioral code changes in the Go reference implementation.
+
+Driven by the independent Rust clean-room validation
+(`docs/clean-room-rust-v0.1.md`): all 22 published fixtures parsed, 70 live
+black-box interoperability tests passed against the Go reference server, zero
+protocol divergence was observed, and ROP v0.1 Core proved independently
+implementable from the published specification set.
+
+### Added (documentation)
+
+* Public clean-room findings summary: `docs/clean-room-rust-v0.1.md`
+  (methodology, allowed source set, fixture/interop results, findings
+  A1–A15, independent supplementary audit).
+
+### Fixed (documentation clarifications; no protocol semantic change)
+
+* **A1 — CLOSED (INPUT_SET_OMISSION):** the previously reported missing
+  normative documents (`docs/invariants.md`, `docs/capability-model.md`) were
+  present in the published repository all along; their absence was a clean-room
+  input-set omission, not a ROP publication defect. A1 must not be cited as a
+  ROP specification defect.
+* **A2:** `malformed-payload` added to the normative problem vocabulary
+  (`spec/core.md` §9) with usage definition and HTTP 400 binding; it was
+  already emitted by the reference implementation. No duplicate
+  malformed-request problem type was created.
+* **A3:** `CONFLICT` documented in `spec/core.md` §4 as an attempt-level
+  outcome, not an Action lifecycle state; on conflict the Action remains in /
+  returns to `APPLIED` with no business mutation, and the result `status`
+  field mirrors the resulting Action state. No new Action state was added.
+* **A4:** `receivedAt` documented in `spec/core.md` §11 as the
+  provider/server-observed receipt time — not client authority, not
+  client-supplied, not required as a public wire field. Eligibility rule
+  unchanged (`receivedAt < expiresAt` eligible).
+* **A6:** every reversal-plan wire member fully specified in
+  `spec/http-binding.md` §3 (camelCase name, type, optionality, semantics,
+  absence behavior), covering the members the clean-room report flagged as
+  insufficiently specified. No new plan functionality.
+* **A15:** `expiresAt` wording conflict between `docs/capability-model.md`
+  and `spec/core.md` resolved: `expiresAt` is present only when an eligibility
+  window applies; a non-IRREVERSIBLE Action MAY have no window; absence means
+  the Action does not expire solely due to time. No behavior change.
+
+### Compatibility
+
+There are **no protocol, wire-format, semantic, capability, state-machine,
+fixture, or conformance changes** from `0.1.1-experimental` or
+`0.1.0-experimental`. Frozen fixtures are unchanged. Protocol version remains
+`0.1`. Reference implementation release version: `0.1.2-experimental`
+(correcting the `VERSION` file, which the `0.1.1-experimental` packaging fix
+had left at `0.1.0-experimental`).
+
+---
+
 ## [0.1.1-experimental] - 2026-08-30
 
 ### Fixed

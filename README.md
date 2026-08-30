@@ -15,8 +15,10 @@ distributed transaction manager or workflow engine.
 side-effecting operations. How a provider actually reverses something — its existing
 refund, delete, or restore API — stays the provider's business.
 
-**Release:** `0.1.0-experimental` (implementation/release version; see `VERSION`
-and `CHANGELOG.md`). The **protocol version** advertised on the wire is `0.1` —
+**Release:** `0.1.2-experimental` (implementation/release version; see `VERSION`
+and `CHANGELOG.md`; clarification-only patch — protocol wire version remains
+`0.1`, wire-compatible with `0.1.0`/`0.1.1`). Independently validated by a
+Rust clean-room implementation: `docs/clean-room-rust-v0.1.md`. The **protocol version** advertised on the wire is `0.1` —
 the distinction is defined in `spec/versioning.md` §4, which also records the
 freeze of v0.1 semantics. The `/.well-known/rop` URI is **experimental and
 currently unregistered**; IANA registration is future governance work
@@ -119,6 +121,8 @@ documents alone (see `spec/interoperability.md` for an honest gap list):
   review against the implemented system.
 - [`docs/v0.1-assessment.md`](docs/v0.1-assessment.md) — the final research
   assessment and the publication recommendation.
+- [`docs/clean-room-rust-v0.1.md`](docs/clean-room-rust-v0.1.md) — independent
+  Rust clean-room validation results and findings.
 
 ## Repository layout
 

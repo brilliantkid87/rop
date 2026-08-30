@@ -68,7 +68,23 @@ fabricate evidence; if something was not verified, say so.
   added (LICENSE, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md, VERSION); README
   navigation consolidated. **STOP - repository ready to tag `v0.1.0-experimental`
   pending explicit instruction.**
-- Active work: none (release preparation complete).
+- 2026-08-30: **Clean-room reassessment accepted: SPEC_NEEDS_CLARIFICATION; A1
+  CLOSED as INPUT_SET_OMISSION** (the reported missing normative documents were
+  present in the published repository all along). Clarification-only patch
+  release `0.1.2-experimental` prepared: protocol wire version remains `0.1`; no
+  behavioral code changes; wire-compatible with 0.1.0/0.1.1 and the frozen
+  fixtures. See `docs/clean-room-rust-v0.1.md`. Not tagged or published yet.
+- 2026-08-30: **Rust clean-room regression rerun returned
+  SPEC_SUFFICIENT_AFTER_CLARIFICATION.** One pre-tagging documentation
+  inconsistency (A16) fixed: `docs/invariants.md` transition table lacked the
+  `REVERSING → APPLIED` conflict row that `spec/core.md` §4 (A3) describes —
+  added, with I-7 updated to state that CONFLICT is an attempt-level outcome,
+  not an Action state. The `REVERSE_FAILED → REVERSING` row was clarified as a
+  reserved, policy-gated possibility that is NOT a v0.1 transition (the
+  reference implementation leaves REVERSE_FAILED terminal). Documentation only;
+  no Go behavior, wire, fixture, or protocol-version changes.
+  `v0.1.2-experimental` is ready to tag.
+- Active work: none (awaiting explicit tag/release instruction).
 
 ---
 
@@ -543,6 +559,58 @@ fabricate evidence; if something was not verified, say so.
   new module path.
 - **Blockers / open questions:** None. No push, no GitHub release, no IANA request.
 
+### CLAR-0.1.2 — Clean-room clarification patch (v0.1.2-experimental)
+
+- **Task ID:** CLAR-0.1.2
+- **Description:** Resolve wire-visible clean-room findings as documentation-only
+  clarifications; publish the clean-room findings summary; bump release version;
+  keep protocol version and all behavior unchanged.
+- **Status:** DONE
+- **Progress:** Complete. A1 closed (INPUT_SET_OMISSION); A2/A3/A4/A6/A15
+  clarified in the normative documents; A5/A7–A14 marked PENDING_RECONCILIATION
+  (original finding texts reside in the `rop-rust` workspace and were not
+  available here — a supplementary independent audit with classifications was
+  recorded in §5 of the findings document to unblock reconciliation).
+- **Files changed:** `spec/core.md` (A2 problem vocabulary + definition; A3
+  CONFLICT attempt-outcome clarification; A4 receivedAt semantics; A15
+  expiresAt absence semantics; citation note for historical (§N) anchors;
+  restored lost `### 12.4` header), `spec/http-binding.md` (A6 full plan-member
+  table; A3 cross-reference; A2 note), `docs/capability-model.md` (A15 wording;
+  A2 problem list), `docs/clean-room-rust-v0.1.md` (new), `CHANGELOG.md`
+  (0.1.2 section), `README.md` (release marker + findings link),
+  `docs/v0.1-assessment.md` (addendum), `VERSION` (0.1.2-experimental),
+  `docs/task-tracker.md`.
+- **Validation:** `gofmt -l .` empty; `go vet ./...` clean; `go test ./... -count=1`
+  all 11 packages pass; **zero `.go` files changed** (behavior invariant);
+  **zero fixture changes**; protocol version unchanged (wire `0.1`).
+  Cross-reference audit: all spec-internal § references resolve (the lost
+  `### 12.4` header was restored); remaining `(§N)` citations are documented
+  historical anchors whose requirements are restated self-contained
+  (`spec/core.md` §0 citation note).
+- **Evidence:** `docs/clean-room-rust-v0.1.md` (methodology, A1 correction,
+  22/22 fixtures, 70 interop tests, zero divergence, classifications,
+  SPEC_NEEDS_CLARIFICATION resolved); diff shows documentation-only changes.
+- **Blockers / open questions:** A5/A7–A14 reconciliation requires the original
+  finding texts from `rop-rust` (not accessed from this workspace, per
+  instruction). Rust regression rerun is performed separately in `rop-rust`.
+
+### A16-FIX — Transition-table consistency (v0.1.2 pre-tagging)
+
+- **Task ID:** A16-FIX
+- **Description:** Make the normative transition table in `docs/invariants.md`
+  consistent with the A3-clarified conflict semantics in `spec/core.md` §4.
+- **Status:** DONE
+- **Files changed:** `docs/invariants.md` (added the `REVERSING → APPLIED`
+  conflict row; I-7 updated; the `REVERSE_FAILED → REVERSING` row annotated as
+  reserved and not a v0.1 transition), `docs/clean-room-rust-v0.1.md` (A16
+  recorded as resolved pre-publication; final recommendation noted as
+  SPEC_SUFFICIENT_AFTER_CLARIFICATION), `docs/task-tracker.md` (this entry).
+- **Validation:** `gofmt -l .` empty; `go vet ./...` clean; `go test ./... -count=1`
+  all 11 packages pass. Automated cross-check: every Go transition is now
+  documented (including `REVERSING → APPLIED`); no `.go` files changed; no
+  fixture files changed; `spec/core.md` cross-references resolve (§12.4).
+- **Blockers / open questions:** None. Ready to tag `v0.1.2-experimental`.
+
 ## Artifacts
 
 | Artifact | Status | Evidence |
@@ -566,6 +634,7 @@ fabricate evidence; if something was not verified, say so.
 | M5 implementation (dependencies, partial compensation, residue) | DONE | `migrations/0004_dependencies_residue.sql`; 14 new tests (6 dependency domain + 8 e2e); full suite green 2026-08-30 |
 | M6 implementation (hardening, fixtures, fuzzing, security review, docs) | DONE | 22 fixtures; 5 fuzz targets crash-free (57s total); 1 security defect found+fixed; final assessment `docs/v0.1-assessment.md` 2026-08-30 |
 | RELEASE-PREP (release preparation for `0.1.0-experimental`) | DONE | Hygiene files (VERSION, LICENSE, CONTRIBUTING.md, SECURITY.md, CHANGELOG.md); freeze + URI-status + assessment-wording doc updates; full validation green 2026-08-30 |
+| CLAR-0.1.2 (clean-room clarification patch, v0.1.2-experimental) | DONE | Documentation-only diff (no .go, no fixtures); all 11 packages green; `docs/clean-room-rust-v0.1.md` published 2026-08-30 |
 | `README.md` | DONE | Written 2026-08-30 |
 
 ## Decisions log

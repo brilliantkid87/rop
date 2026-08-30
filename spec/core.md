@@ -15,6 +15,12 @@ RECOMMENDED, MAY, OPTIONAL are to be interpreted as described in RFC 2119 and
 RFC 8174 when, and only when, they appear in all capitals. Normative language
 MUST NOT be used for implementation preferences.
 
+**Citation note (v0.1.2):** references of the form `(§N)` where `N` has no
+matching section in this specification are historical anchors into the
+project's internal research brief. Every requirement so cited is restated
+self-contained within this specification, which is normative on its own; the
+anchor never carries requirements that appear nowhere here.
+
 ## 1. Scope and thesis
 
 ROP standardizes the **interoperable description, recording, evaluation, and
@@ -91,6 +97,16 @@ OUTCOME_UNKNOWN  EXPIRED  IRREVERSIBLE
 
 - State transitions MUST be validated against the normative transition table
   (`docs/invariants.md`). Illegal transitions are implementation errors.
+- **`CONFLICT` is not an Action lifecycle state.** It is an *attempt-level
+  outcome* on the reversal result: the provider refused the reversal because a
+  correctness-critical precondition failed (unsafe concurrent mutation,
+  published resource, missing anchor). A reversal result with
+  `outcome: CONFLICT` leaves the Action in its source state — for the
+  reference flow, `REVERSING` returns to `APPLIED` with no business mutation
+  (invariant I-7). The `status` field of a reversal result, where present,
+  mirrors the resulting Action state after the outcome is recorded — for
+  `CONFLICT` that is `APPLIED`. No new Action state exists for conflict, and
+  none may be added to describe it.
 - `OUTCOME_UNKNOWN` MUST NOT be converted into `REVERSE_FAILED` without
   evidence (§34). Unknown is a legitimate outcome.
 - Expiration is evaluated by server time with the exact boundary
@@ -104,7 +120,9 @@ OUTCOME_UNKNOWN  EXPIRED  IRREVERSIBLE
 A tracked Action SHOULD produce an immutable public Action Receipt containing
 at minimum: `providerId`, `actionId`, `operationId`, `createdAt` (RFC 3339,
 UTC), `resourceRef` (`resourceType` + `resourceId`, opaque), `reversibility`,
-`guarantee`, `status`, `expiresAt` (when a window applies), and residue
+`guarantee`, `status`, `expiresAt` (present only when an eligibility window
+applies; absence means the Action does not expire solely due to time — this is
+valid for any class, including non-IRREVERSIBLE ones), and residue
 representation where applicable. Receipts MUST NOT contain reusable privileged
 reversal credentials or private reversal material (§12, §13). The public
 receipt/private material distinction is structural: private material (previous
@@ -153,8 +171,18 @@ stable v0.1 problem types:
 action-not-found  reversal-expired  irreversible-action  reversal-conflict
 reversal-already-in-progress  authorization-denied  precondition-failed
 verification-failed  capability-unavailable  idempotency-key-conflict
-dependency-exists
+dependency-exists  malformed-payload
 ```
+
+`malformed-payload` (added in v0.1.2 as an explicit clarification — it was
+already emitted by the reference implementation) is a stable problem type
+used when a request body cannot be parsed as the expected JSON shape, or when
+request input violates a stated bound (for example an `Idempotency-Key`
+longer than the bound in the HTTP binding). It is a request-level rejection:
+the server MUST NOT partially apply such a request, and the problem carries
+HTTP status `400` on the HTTP binding. It is distinct from
+`precondition-failed` (a semantically unsatisfiable but well-formed request)
+and from `irreversible-action` (a class-level refusal).
 
 Clients MUST NOT need to parse human-readable messages to understand
 semantics. Transport failure MUST be distinguishable from ROP semantic
@@ -187,7 +215,13 @@ Reversal requests SHOULD support an `Idempotency-Key` (Master Prompt §36):
 Expiration controls whether a new reversal may begin; it does not invalidate
 a reversal already accepted before the deadline (Master Prompt §52):
 
-- `receivedAt < expiresAt` — a new reversal may begin;
+- `receivedAt` is the **provider/server-observed time** at which the reversal
+  request was received and evaluated. It is not client authority: client time
+  MUST NOT determine eligibility, and clients do not supply `receivedAt`.
+  `receivedAt` is not required to be a public wire field; the reference
+  binding evaluates it server-side and exposes only the resulting `status`
+  and `expiresAt`. The eligibility rule is unchanged:
+  `receivedAt < expiresAt` — a new reversal may begin;
   `receivedAt >= expiresAt` — it may not. Server time only (§24).
 - An Action without an expiry window never expires.
 - Expiry is derived from durable state and server time, so it applies
@@ -261,6 +295,8 @@ reversal.
   provider-defined *partial* postcondition — the compensated effects are
   gone AND the declared residue remains — and MUST NOT upgrade the outcome
   to `REVERSED`.
+
+### 12.4 Reconciliation and provider execution identity
 
 Reconciliation is a first-class domain behavior for resolving
 `OUTCOME_UNKNOWN` attempts (Master Prompt §38). v0.1 keeps it **internal**:

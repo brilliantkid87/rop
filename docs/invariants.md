@@ -47,7 +47,10 @@ once provider behavior; provider adapters own their idempotency.
 
 ### I-7 — Unsafe concurrent restoration is rejected
 Execution revalidates preconditions and enforces CAS on resource version; mismatch ⇒
-CONFLICT, never destructive restore (§41, §48).
+CONFLICT, never destructive restore (§41, §48). `CONFLICT` is an attempt-level
+outcome, not an Action state: the transition table records
+`REVERSING → APPLIED` (no business mutation) and the reversal result reports
+`outcome: CONFLICT` with `status: APPLIED` (`spec/core.md` §4, v0.1.2).
 - Test: `TestStalePlanConflict` — plan at v7, mutate to v8, reverse with old plan ⇒
   reversal-conflict; resource unchanged.
 
@@ -183,12 +186,13 @@ partial or acquire residue.
 | REVERSING | provider success + verification pass | REVERSED | attempt result, status-history | — |
 | REVERSING | provider success + partial residue | PARTIALLY_REVERSED | attempt result, residue record | — |
 | REVERSING | provider observed failure | REVERSE_FAILED | attempt result, status-history | NON_RETRYABLE unless classified RETRYABLE |
+| REVERSING | provider refuses on correctness-critical precondition (result `outcome: CONFLICT`) | APPLIED | attempt concluded (observed CONFLICT), status-history | no business mutation; conflict over destructive restore (I-7); `CONFLICT` is an attempt-level outcome, NOT an Action state — the Action is back in APPLIED and may be re-requested when eligible |
 | REVERSING | response lost / unresolvable | OUTCOME_UNKNOWN | attempt(AWAITING_RECONCILIATION) | reconciliation only; never auto-fail |
 | REVERSING | expires mid-flight | REVERSING (unchanged) | — | in-flight attempt MAY finish (§52) |
 | OUTCOME_UNKNOWN | reconciliation evidence: succeeded | REVERSED (or PARTIALLY_REVERSED) | attempt result, status-history | — |
 | OUTCOME_UNKNOWN | reconciliation evidence: failed | REVERSE_FAILED | attempt result | MANUAL if ambiguous |
 | OUTCOME_UNKNOWN | reconciliation evidence: retry-safe | REVERSING | new/updated attempt | RETRYABLE with idempotent key |
-| REVERSE_FAILED | new eligible attempt permitted by policy | REVERSING | new attempt | policy-gated, not automatic |
+| REVERSE_FAILED | new eligible attempt permitted by policy | REVERSING | new attempt | RESERVED, policy-gated, not automatic: NOT a v0.1 transition — the reference implementation leaves REVERSE_FAILED terminal, and any future policy path requires an explicit protocol decision |
 | EXPIRED | reversal requested | (rejected) | problem only | I-8 |
 | IRREVERSIBLE | reversal requested | (rejected) | problem only | I-8 analogue for class |
 
