@@ -1,0 +1,22 @@
+{
+  "actionId": "act_01KEXAMPLE00000000000003",
+  "providerId": "example-provider",
+  "operationId": "resource.notify",
+  "createdAt": "2026-08-30T00:00:00Z",
+  "resourceRef": {
+    "resourceType": "notification",
+    "resourceId": "ntf_01KEXAMPLE000000000000"
+  },
+  "reversibility": "PARTIALLY_COMPENSATABLE",
+  "guarantee": "BEST_EFFORT",
+  "status": "APPLIED",
+  "expiresAt": "2026-08-30T01:00:00Z",
+  "residue": [
+    {
+      "description": "the delivered notification record cannot be retracted (immutable delivery observation)",
+      "expected": true,
+      "providerDefined": true,
+      "manualRemediable": false
+    }
+  ]
+}

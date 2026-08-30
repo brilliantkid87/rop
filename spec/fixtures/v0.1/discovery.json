@@ -1,0 +1,12 @@
+{
+  "protocol": "rop",
+  "versions": ["0.1"],
+  "binding": "http",
+  "capabilities": {
+    "receipts": true,
+    "planning": true,
+    "reversal": true,
+    "verification": true,
+    "someFutureCapability": true
+  }
+}

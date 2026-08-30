@@ -1,0 +1,16 @@
+{
+  "actionId": "act_01KEXAMPLE00000000000002",
+  "generatedAt": "2026-08-30T00:01:00Z",
+  "basisResourceVersion": 2,
+  "currentStatus": "APPLIED",
+  "reversibility": "RESTORABLE",
+  "guarantee": "EXACT",
+  "expiresAt": "2026-08-30T01:00:00Z",
+  "preconditions": [
+    "resource version still equals the version this action produced"
+  ],
+  "expectedReversal": "restore the captured prior value and version",
+  "conflicts": [
+    "resource is at version 3; restoration expects version 2 - the plan is stale and reversal will conflict"
+  ]
+}

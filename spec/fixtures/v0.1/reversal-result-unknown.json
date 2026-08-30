@@ -1,0 +1,9 @@
+{
+  "attemptId": "ra_01KEXAMPLE000000000000002",
+  "actionId": "act_01KEXAMPLE00000000000000",
+  "status": "OUTCOME_UNKNOWN",
+  "outcome": "OUTCOME_UNKNOWN",
+  "observedAt": "2026-08-30T00:05:00Z",
+  "providerRef": "rop-rev-ra_01KEXAMPLE000000000000002",
+  "error": "provider executed; response lost"
+}

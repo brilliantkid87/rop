@@ -1,0 +1,6 @@
+{
+  "type": "urn:rop:problem:dependency-exists",
+  "title": "dependency exists",
+  "status": 409,
+  "detail": "action act_01KEXAMPLE00000000000000 has active dependent Actions; reversal is unsafe until they are resolved"
+}

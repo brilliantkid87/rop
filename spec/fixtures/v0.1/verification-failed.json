@@ -1,0 +1,14 @@
+{
+  "actionId": "act_01KEXAMPLE00000000000000",
+  "status": "FAILED",
+  "semantics": "LOCAL_READONLY",
+  "postconditions": [
+    {
+      "id": "resource-absent",
+      "description": "created resource no longer exists",
+      "satisfied": false
+    }
+  ],
+  "evaluatedAt": "2026-08-30T00:06:00Z",
+  "detail": "resource still exists"
+}

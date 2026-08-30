@@ -1,0 +1,6 @@
+{
+  "type": "urn:rop:problem:capability-unavailable",
+  "title": "capability unavailable",
+  "status": 501,
+  "detail": "this provider does not advertise this optional capability (docs/capability-model.md §3)"
+}

@@ -1,0 +1,13 @@
+{
+  "actionId": "act_01KEXAMPLE00000000000001",
+  "providerId": "example-provider",
+  "operationId": "resource.publish",
+  "createdAt": "2026-08-30T00:00:00Z",
+  "resourceRef": {
+    "resourceType": "resource",
+    "resourceId": "res_01KEXAMPLE0000000000000"
+  },
+  "reversibility": "IRREVERSIBLE",
+  "guarantee": "NONE",
+  "status": "IRREVERSIBLE"
+}

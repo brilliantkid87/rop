@@ -1,0 +1,6 @@
+{
+  "type": "urn:rop:problem:idempotency-key-conflict",
+  "title": "idempotency key conflict",
+  "status": 409,
+  "detail": "idempotency key was already used for a different Action in this scope"
+}

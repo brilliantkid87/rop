@@ -1,0 +1,14 @@
+{
+  "protocol": "rop",
+  "versions": [
+    "0.1"
+  ],
+  "binding": "http",
+  "capabilities": {
+    "receipts": true,
+    "planning": false,
+    "reversal": false,
+    "verification": true
+  },
+  "comment": "Core-only provider: no optional capabilities advertised."
+}

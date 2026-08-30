@@ -1,0 +1,6 @@
+{
+  "type": "urn:rop:problem:reversal-expired",
+  "title": "reversal expired",
+  "status": 410,
+  "detail": "reversal window for action act_01KEXAMPLE00000000000000 expired at 2026-08-30T01:00:00Z"
+}

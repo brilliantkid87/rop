@@ -1,0 +1,16 @@
+# SQLite databases and WAL artifacts
+*.db
+*.db-wal
+*.db-shm
+
+# Build artifacts
+ropd
+ropd.exe
+ropctl
+ropctl.exe
+*.test
+*.out
+
+# OS / editor artifacts
+.DS_Store
+Thumbs.db

@@ -1,0 +1,14 @@
+{
+  "actionId": "act_01KEXAMPLE00000000000009",
+  "providerId": "example-provider",
+  "operationId": "future.operation",
+  "createdAt": "2026-08-30T00:00:00Z",
+  "resourceRef": {
+    "resourceType": "resource",
+    "resourceId": "res_01KEXAMPLE0000000000000"
+  },
+  "reversibility": "TIME_REVERSIBLE",
+  "guarantee": "MOSTLY",
+  "status": "APPLIED",
+  "comment": "Received unknown semantic enum values MUST remain unknown; parsers MUST NOT coerce them into known values."
+}
